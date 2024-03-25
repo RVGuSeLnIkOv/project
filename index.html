@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-приложение для сегментации вирусной пневмонии</title>
+</head>
+<body>
+    <h1>Веб-приложение для сегментации вирусной пневмонии</h1>
+
+    <!-- Форма для загрузки изображения -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput">
+        <button type="button" onclick="uploadImage()">Загрузить изображение</button>
+    </form>
+
+    <!-- Кнопка для запуска процесса предсказания -->
+    <button type="button" onclick="predict()">Предсказать</button>
+
+    <!-- Здесь будет отображаться результат предсказания -->
+    <div id="predictionResult"></div>
+
+    <script>
+        async function uploadImage() {
+            const formData = new FormData();
+            formData.append('file', document.getElementById('fileInput').files[0]);
+
+            const response = await fetch('/predict/', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Изображение успешно загружено!');
+            } else {
+                alert('Ошибка при загрузке изображения!');
+            }
+        }
+
+        async function predict() {
+            const response = await fetch('/predict/', {
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('predictionResult').innerText = 'Результат предсказания: ' + data.result;
+            } else {
+                alert('Ошибка при выполнении предсказания!');
+            }
+        }
+    </script>
+</body>
+</html>
